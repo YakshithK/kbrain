@@ -15,8 +15,6 @@ Current directory:
 Recent git activity:
 !`git log --oneline -5 2>/dev/null || echo "[Not a git repo]"`
 
-Recent brain sessions:
-!`ls -t /mnt/c/Users/prabh/Desktop/obsidian/braindump/Sessions/ 2>/dev/null | head -5 || echo "[No sessions yet]"`
 
 ---
 
