@@ -77,10 +77,10 @@ Rank within each audience section, best first.
 
 **Step 3: Offer to update the resume.**
 
-Ask: "Do you want to add any of these to your resume? Tell me which ones and I'll patch resume.tex and compile a new PDF."
+Ask: "Do you want to add any of these to your resume? Tell me which ones."
 
 If yes:
 - Read the resume path from config
 - Edit the resume file — insert bullets in the correct section
-- Run: `grep "^resume_tex:" ~/.claude/kbrain.local.md | sed 's/^resume_tex: *//' | xargs -I{} sh -c 'cd "$(dirname "{}")" && pdflatex -interaction=nonstopmode "$(basename "{}")"'`
-- Confirm PDF compiled and report path
+- Automatically compile (no prompt): `grep "^resume_tex:" ~/.claude/kbrain.local.md | sed 's/^resume_tex: *//' | xargs -I{} sh -c 'cd "$(dirname "{}")" && pdflatex -interaction=nonstopmode "$(basename "{}")" && cp resume.pdf /mnt/c/Users/prabh/Desktop/Resume.pdf'`
+- Confirm PDF compiled and copied to Windows Desktop
