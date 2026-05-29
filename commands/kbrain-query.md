@@ -3,6 +3,7 @@ name: kbrain-query
 description: Use when asked to search the brain/vault, look something up in notes, recall a past decision or session, find what's known about a project or topic, or answer any question that might be in the Obsidian vault. Searches across Projects, Sessions, Fellowships, Applications, Ideas, and all other vault notes.
 argument-hint: <question or search term>
 arguments: [question]
+allowed-tools: Bash
 ---
 
 ## Config check
