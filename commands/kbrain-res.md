@@ -17,7 +17,7 @@ Existing project note (empty if new project):
 !`VAULT=$(grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//'); cat "$VAULT/Projects/$project.md" 2>/dev/null || echo "[No existing note — this is a new project]"`
 
 Current resume source:
-!`RESUME=$(grep "^resume_tex:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^resume_tex: *//'); eval cat "$RESUME" 2>/dev/null || echo "[No resume.tex configured]"`
+!`RESUME=$(grep "^resume_tex:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^resume_tex: *//'); cat "${RESUME/#\~/$HOME}" 2>/dev/null || echo "[No resume.tex configured]"`
 
 ---
 
@@ -82,5 +82,5 @@ Ask: "Do you want to add any of these to your resume? Tell me which ones and I'l
 If yes:
 - Read the resume path from config
 - Edit the resume file — insert bullets in the correct section
-- Run: `cd $(dirname $(eval echo $RESUME)) && pdflatex -interaction=nonstopmode $(basename $(eval echo $RESUME))`
+- Run: `RESUME=$(grep "^resume_tex:" ~/.claude/kbrain.local.md | sed 's/^resume_tex: *//'); RESUME_EXPANDED="${RESUME/#\~/$HOME}"; cd "$(dirname "$RESUME_EXPANDED")" && pdflatex -interaction=nonstopmode "$(basename "$RESUME_EXPANDED")"`
 - Confirm PDF compiled and report path
