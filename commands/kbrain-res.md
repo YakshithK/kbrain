@@ -131,6 +131,6 @@ If yes, use `AskUserQuestion` to ask which specific bullets (list them as option
 
 Then:
 1. Read the resume tex path from config
-2. Edit resume.tex - insert bullets in the correct section, separated from the previous entry with `\vspace{4pt}` (the resume standard — not 2pt)
+2. Edit resume.tex - insert bullets in the correct section, separated from the previous entry with `\vspace{6pt}` (the resume standard)
 3. Compile: `grep "^resume_tex:" ~/.claude/kbrain.local.md | sed 's/^resume_tex: *//' | xargs -I{} sh -c 'cd "$(dirname "{}")" && pdflatex -interaction=nonstopmode "$(basename "{}")" && cp resume.pdf /mnt/c/Users/prabh/Desktop/Resume.pdf'`
 4. Confirm PDF compiled and copied to Windows Desktop
