@@ -13,9 +13,12 @@ metadata:
 3. Level0: Cursor for Video Games — 3 bullets
 4. ClearTrust: Elderly Companion Robot — 3 bullets
 
-## Bullet standard
+## Formatting standards
 
-Exactly 3 bullets per entry. No exceptions. Enforced in kbrain-res Step 2.
+- Exactly 3 bullets per entry. No exceptions.
+- Spacing between entries: `\vspace{4pt}` (not 2pt). Slight but intentional breathing room.
+- No em dashes anywhere. Use commas, colons, or semicolons.
+- Entry header format: `\textbf{Title}\hfill Date Range`
 
 ## Queued to add (resume-ready now)
 
