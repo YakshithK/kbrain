@@ -72,4 +72,4 @@ If nothing: say so in one line.
 
 ---
 
-**Start now: ask the first question based on the mode above.**
+Based on the arguments above, pick the right mode and respond to the user now. If no arguments, start the session debrief by asking: **"What were you working on in this session?"**
