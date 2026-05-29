@@ -1,0 +1,13 @@
+{
+  "name": "kbrain",
+  "version": "1.0.0",
+  "description": "Personal knowledge OS + resume builder for Claude Code. Interview-driven Obsidian notes, audience-specific resume bullets, and session logs — all from slash commands.",
+  "author": {
+    "name": "Yakshith Kommineni",
+    "url": "https://github.com/YakshithK"
+  },
+  "homepage": "https://github.com/YakshithK/kbrain",
+  "repository": "https://github.com/YakshithK/kbrain",
+  "license": "MIT",
+  "keywords": ["knowledge", "obsidian", "resume", "second-brain", "claude-code"]
+}
