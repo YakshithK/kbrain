@@ -14,10 +14,10 @@ You are conducting a resume interview for: $project
 ## Existing context (loaded automatically)
 
 Existing project note (empty if new project):
-!`VAULT=$(grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//'); cat "$VAULT/Projects/$project.md" 2>/dev/null || echo "[No existing note — this is a new project]"`
+!`grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//' | xargs -I{} cat "{}/Projects/$project.md" 2>/dev/null || echo "[No existing note — this is a new project]"`
 
 Current resume source:
-!`RESUME=$(grep "^resume_tex:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^resume_tex: *//'); cat "$RESUME" 2>/dev/null || echo "[No resume.tex configured]"`
+!`grep "^resume_tex:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^resume_tex: *//' | xargs cat 2>/dev/null || echo "[No resume.tex configured]"`
 
 ---
 
@@ -56,7 +56,7 @@ Sections: What it does, Technical depth, Impact and traction, Hardest problem so
 Normalize project name: Title Case, spaces allowed (e.g. "Level0", "Agent Regression Lab").
 
 Write to:
-!`VAULT=$(grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//'); echo "$VAULT/Projects/$project.md"`
+!`grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//' | xargs -I{} echo "{}/Projects/$project.md"`
 
 Confirm the file was written.
 
@@ -82,5 +82,5 @@ Ask: "Do you want to add any of these to your resume? Tell me which ones and I'l
 If yes:
 - Read the resume path from config
 - Edit the resume file — insert bullets in the correct section
-- Run: `RESUME=$(grep "^resume_tex:" ~/.claude/kbrain.local.md | sed 's/^resume_tex: *//'); cd "$(dirname "$RESUME")" && pdflatex -interaction=nonstopmode "$(basename "$RESUME")"`
+- Run: `grep "^resume_tex:" ~/.claude/kbrain.local.md | sed 's/^resume_tex: *//' | xargs -I{} sh -c 'cd "$(dirname "{}")" && pdflatex -interaction=nonstopmode "$(basename "{}")"'`
 - Confirm PDF compiled and report path
