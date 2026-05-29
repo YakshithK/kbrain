@@ -3,24 +3,26 @@ name: kbrain-query
 description: Use when asked to search the brain/vault, look something up in notes, recall a past decision or session, find what's known about a project or topic, or answer any question that might be in the Obsidian vault. Searches across Projects, Sessions, Fellowships, Applications, Ideas, and all other vault notes.
 argument-hint: <question or search term>
 arguments: [question]
-allowed-tools: Bash
+allowed-tools: Bash, AskUserQuestion
 ---
 
 ## Config check
-!`[ -f ~/.claude/kbrain.local.md ] && echo "Config loaded." || echo "⚠️  No config found. Copy kbrain.local.example.md to ~/.claude/kbrain.local.md and set your vault_path."`
+!`[ -f ~/.claude/kbrain.local.md ] && echo "Config loaded." || echo "MISSING — copy kbrain.local.example.md to ~/.claude/kbrain.local.md"`
 
 Vault path:
 !`grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//'`
 
-You are querying the Brain vault to answer: $question
+Query: $question
+
+If $question is empty, use `AskUserQuestion` to ask: "What do you want to look up in your vault?" → options: Recent sessions, Active projects, Fellowship status, Other (type your question). Use the answer as the query before proceeding.
 
 ## Vault search results (auto-loaded)
 
-Files matching the query:
-!`grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//' | xargs -I{} grep -ril "$question" "{}/" 2>/dev/null | head -20`
+Files matching the query (markdown only, excluding .obsidian and .smart-env):
+!`VAULT=$(grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//'); Q="$question"; [ -z "$Q" ] && exit 0; grep -ril --include="*.md" "$Q" "$VAULT/" 2>/dev/null | grep -v '/\.obsidian/' | grep -v '/\.smart-env/' | head -20`
 
 Matching content excerpts:
-!`grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//' | xargs -I{} grep -ri --include="*.md" -l "$question" "{}/" 2>/dev/null | xargs -I@ sh -c 'echo "=== @ ==="; grep -i -A 3 -B 1 "$question" "@" 2>/dev/null; echo' | head -100`
+!`VAULT=$(grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//'); Q="$question"; [ -z "$Q" ] && exit 0; grep -ril --include="*.md" "$Q" "$VAULT/" 2>/dev/null | grep -v '/\.obsidian/' | grep -v '/\.smart-env/' | head -20 | while IFS= read -r f; do echo "=== $f ==="; grep -i -A 3 -B 1 "$Q" "$f" 2>/dev/null; echo; done | head -120`
 
 Recent sessions (last 10):
 !`grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//' | xargs -I{} ls -t "{}/Sessions/" 2>/dev/null | head -10`
