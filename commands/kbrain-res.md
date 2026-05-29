@@ -9,12 +9,12 @@ allowed-tools: Read, Write, Edit, Bash, AskUserQuestion
 
 You are running a structured resume interview for: **$project**
 
-Do NOT wait for the user to volunteer information. Drive the entire workflow yourself. Ask questions, collect answers, write outputs, generate bullets — all in one end-to-end run.
+Do NOT wait for the user to volunteer information. Drive the entire workflow yourself. Ask questions, collect answers, write outputs, generate bullets - all in one end-to-end run.
 
 ## Auto-loaded context
 
 Config check:
-!`[ -f ~/.claude/kbrain.local.md ] && echo "OK" || echo "MISSING — copy kbrain.local.example.md to ~/.claude/kbrain.local.md"`
+!`[ -f ~/.claude/kbrain.local.md ] && echo "OK" || echo "MISSING - copy kbrain.local.example.md to ~/.claude/kbrain.local.md"`
 
 Existing project note (if any):
 !`grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//' | xargs -I{} cat "{}/Projects/$project.md" 2>/dev/null || echo "[NEW PROJECT]"`
@@ -24,7 +24,7 @@ Resume:
 
 ---
 
-## PHASE 1 — COLLECT BASICS
+## PHASE 1 - COLLECT BASICS
 
 Read the existing note above. For any field already answered clearly, skip it.
 
@@ -35,27 +35,27 @@ Ask these in one call:
 - "What is your role on $project?" → options: Solo builder, Lead (with collaborators), Contributor (part of a team), Exploring / undefined
 - "Which audiences should this target?" (multiSelect) → options: cs-admission, fellowship, technical, general
 
-Then ask in a second call (free text via Other — no options match):
-- "Describe $project in one sentence — what it does and who it's for." → options: [suggest three different framing styles as options, user picks or types own]
+Then ask in a second call (free text via Other - no options match):
+- "Describe $project in one sentence - what it does and who it's for." → options: [suggest three different framing styles as options, user picks or types own]
 - "What is the tech stack and the key architecture decision you made?" → options: [suggest common stacks relevant to context, or let user type]
 
 Then ask:
 - "What are the hardest specific technical problem you solved and how?" → free text
-- "What are the numbers? (downloads, users, stars, uptime, latency, accuracy — any metric)" → free text
+- "What are the numbers? (downloads, users, stars, uptime, latency, accuracy - any metric)" → free text
 - "Any external validation? (awards, press, GitHub activity, fellowship mentions, advisor feedback)" → free text
 - "When did you start, and what's left to build?" → free text
 
-Batch the free-text questions as 3–4 per `AskUserQuestion` call (max 4 questions per call). Do NOT send them as chat messages — use the tool.
+Batch the free-text questions as 3–4 per `AskUserQuestion` call (max 4 questions per call). Do NOT send them as chat messages - use the tool.
 
 ---
 
-## PHASE 2 — GAP PROBE
+## PHASE 2 - GAP PROBE
 
-Review all collected answers. Identify the 2–3 weakest spots (missing metrics, vague stack, unclear personal contribution). Ask targeted follow-ups using `AskUserQuestion`. Maximum one call, maximum 3 questions. Then stop — move to Phase 3 regardless.
+Review all collected answers. Identify the 2–3 weakest spots (missing metrics, vague stack, unclear personal contribution). Ask targeted follow-ups using `AskUserQuestion`. Maximum one call, maximum 3 questions. Then stop - move to Phase 3 regardless.
 
 ---
 
-## PHASE 3 — WRITE AND GENERATE
+## PHASE 3 - WRITE AND GENERATE
 
 Execute all steps below automatically without asking permission between them.
 
@@ -100,15 +100,16 @@ Confirm the file was written.
 
 ### Step 2: Generate resume bullets
 
-For each audience — cs-admission, fellowship, technical, general — generate **exactly 3 bullets** using the XYZ formula: "Accomplished X, as measured by Y, by doing Z."
+For each audience - cs-admission, fellowship, technical, general - generate **exactly 3 bullets** using the XYZ formula: "Accomplished X, as measured by Y, by doing Z."
 
-The resume standard is 3 bullets per entry, no exceptions. Every project/experience gets exactly 3 — not 2, not 4.
+The resume standard is 3 bullets per entry, no exceptions. Every project/experience gets exactly 3 - not 2, not 4.
 
 Rules:
 - Lead with the strongest metric or outcome
 - Action verbs only: Built, Shipped, Reduced, Increased, Designed, Implemented, Engineered, Trained, Deployed, Led, Architected
 - One bullet = one achievement, max 2 lines
 - Numbers > scope > nothing
+- Never use em dashes (—). Use commas, colons, or semicolons instead, or restructure the sentence.
 
 For each bullet:
 - The bullet text
@@ -124,12 +125,12 @@ Rank best-first within each audience.
 ### Step 3: Offer resume patch
 
 Use `AskUserQuestion` to ask:
-- "Do you want to add any bullets to your resume?" → options: Yes — pick bullets next, No — skip for now
+- "Do you want to add any bullets to your resume?" → options: Yes - pick bullets next, No - skip for now
 
 If yes, use `AskUserQuestion` to ask which specific bullets (list them as options, multiSelect true).
 
 Then:
 1. Read the resume tex path from config
-2. Edit resume.tex — insert bullets in the correct section
+2. Edit resume.tex - insert bullets in the correct section
 3. Compile: `grep "^resume_tex:" ~/.claude/kbrain.local.md | sed 's/^resume_tex: *//' | xargs -I{} sh -c 'cd "$(dirname "{}")" && pdflatex -interaction=nonstopmode "$(basename "{}")" && cp resume.pdf /mnt/c/Users/prabh/Desktop/Resume.pdf'`
 4. Confirm PDF compiled and copied to Windows Desktop
