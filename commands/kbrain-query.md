@@ -6,23 +6,26 @@ arguments: [question]
 ---
 
 ## Config check
-!`[ -f ~/.claude/kbrain.local.md ] && VAULT=$(grep "^vault_path:" ~/.claude/kbrain.local.md | sed 's/^vault_path: *//') && echo "Vault: $VAULT" || echo "⚠️  No config found. Copy kbrain.local.example.md to ~/.claude/kbrain.local.md and set your vault_path."`
+!`[ -f ~/.claude/kbrain.local.md ] && echo "Config loaded." || echo "⚠️  No config found. Copy kbrain.local.example.md to ~/.claude/kbrain.local.md and set your vault_path."`
+
+Vault path:
+!`grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//'`
 
 You are querying the Brain vault to answer: $question
 
 ## Vault search results (auto-loaded)
 
 Files matching the query:
-!`VAULT=$(grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//'); grep -ril "$question" "$VAULT/" 2>/dev/null | head -20`
+!`grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//' | xargs -I{} grep -ril "$question" "{}/" 2>/dev/null | head -20`
 
 Matching content excerpts:
-!`VAULT=$(grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//'); grep -ri --include="*.md" -l "$question" "$VAULT/" 2>/dev/null | xargs -I{} sh -c 'echo "=== {} ==="; grep -i -A 3 -B 1 "'"$question"'" "{}" 2>/dev/null; echo' | head -100`
+!`grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//' | xargs -I{} grep -ri --include="*.md" -l "$question" "{}/" 2>/dev/null | xargs -I@ sh -c 'echo "=== @ ==="; grep -i -A 3 -B 1 "$question" "@" 2>/dev/null; echo' | head -100`
 
 Recent sessions (last 10):
-!`VAULT=$(grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//'); ls -t "$VAULT/Sessions/"*.md 2>/dev/null | head -10 | xargs -I{} sh -c 'echo "--- {} ---"; head -10 "{}"' 2>/dev/null`
+!`grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//' | xargs -I{} ls -t "{}/Sessions/" 2>/dev/null | head -10`
 
 All project notes:
-!`VAULT=$(grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//'); ls "$VAULT/Projects/"*.md 2>/dev/null | xargs -I{} basename {} .md`
+!`grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//' | xargs -I{} ls "{}/Projects/" 2>/dev/null`
 
 ---
 

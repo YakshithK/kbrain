@@ -6,7 +6,10 @@ disable-model-invocation: false
 ---
 
 ## Config check
-!`[ -f ~/.claude/kbrain.local.md ] && VAULT=$(grep "^vault_path:" ~/.claude/kbrain.local.md | sed 's/^vault_path: *//') && echo "Vault: $VAULT" || echo "⚠️  No config found. Copy kbrain.local.example.md to ~/.claude/kbrain.local.md and set your vault_path."`
+!`[ -f ~/.claude/kbrain.local.md ] && echo "Config loaded." || echo "⚠️  No config found. Copy kbrain.local.example.md to ~/.claude/kbrain.local.md and set your vault_path."`
+
+Vault path:
+!`grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//'`
 
 ## Auto-loaded context
 
@@ -17,7 +20,7 @@ Recent git activity:
 !`git log --oneline -5 2>/dev/null || echo "[Not a git repo]"`
 
 Recent brain sessions:
-!`VAULT=$(grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//'); ls -t "$VAULT/Sessions/" 2>/dev/null | head -5 || echo "[No sessions yet]"`
+!`grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//' | xargs -I{} ls -t "{}/Sessions/" 2>/dev/null | head -5 || echo "[No sessions yet]"`
 
 Arguments passed: $ARGUMENTS
 
@@ -75,8 +78,8 @@ next: [one sentence]
 [concrete actions]
 ```
 
-Write the file to:
-!`VAULT=$(grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//'); echo "$VAULT/Sessions/"`
+Sessions folder:
+!`grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//' | xargs -I{} echo "{}/Sessions/"`
 
 Confirm file written, then → Phase R (resume check).
 
@@ -86,8 +89,8 @@ Confirm file written, then → Phase R (resume check).
 
 Identify which note to update from the argument (match against Projects/, Fellowships/, Applications/, Me/).
 
-Read the current note:
-!`VAULT=$(grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//'); TERM=$(echo "$ARGUMENTS" | sed 's/^update //i'); cat "$VAULT/$TERM" 2>/dev/null || find "$VAULT" -name "*.md" | xargs grep -li "$TERM" 2>/dev/null | head -3`
+Search for matching notes:
+!`grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//' | xargs -I{} grep -ril "$ARGUMENTS" "{}/" 2>/dev/null | head -5`
 
 Ask what to add or change — new metrics, decisions, traction, status change, technical depth, links.
 Patch the note in place. Update `last_updated` frontmatter field.
@@ -99,7 +102,10 @@ Confirm what changed, then → Phase R (resume check).
 
 Ask: what's the idea, what problem does it solve, any early thinking on approach?
 
-Append a timestamped entry to Ideas.md in the vault:
+Ideas file:
+!`grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//' | xargs -I{} echo "{}/Ideas.md"`
+
+Append a timestamped entry:
 
 ```
 ## [YYYY-MM-DD] [Idea title]
@@ -116,11 +122,11 @@ Stop after writing. No resume check.
 
 ## MODE D — VAULT TIDY
 
-Read vault structure:
-!`VAULT=$(grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//'); find "$VAULT" -name "*.md" | sort`
+Vault structure:
+!`grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//' | xargs -I{} find "{}" -name "*.md" | sort`
 
-Read the profile note:
-!`VAULT=$(grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//'); cat "$VAULT/Me/Profile.md" 2>/dev/null`
+Profile note:
+!`grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//' | xargs -I{} cat "{}/Me/Profile.md" 2>/dev/null`
 
 Surface:
 - Notes missing frontmatter
@@ -137,11 +143,11 @@ Ask which issues to fix, then fix them. Confirm changes made. No resume check af
 
 (Runs after Session Debrief and Update Note modes.)
 
-Read recent sessions:
-!`VAULT=$(grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//'); for f in $(ls -t "$VAULT/Sessions/"*.md 2>/dev/null | head -5); do echo "=== $f ==="; cat "$f"; echo; done`
+Recent sessions:
+!`grep "^vault_path:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^vault_path: *//' | xargs -I{} ls -t "{}/Sessions/" 2>/dev/null | head -5`
 
-Read current resume:
-!`RESUME=$(grep "^resume_tex:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^resume_tex: *//'); eval cat "$RESUME" 2>/dev/null || echo "[No resume configured]"`
+Current resume:
+!`grep "^resume_tex:" ~/.claude/kbrain.local.md 2>/dev/null | sed 's/^resume_tex: *//' | xargs cat 2>/dev/null || echo "[No resume configured]"`
 
 Look for:
 - New metrics, traction, or outcomes not yet on the resume
